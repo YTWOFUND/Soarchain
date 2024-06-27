@@ -45,12 +45,11 @@ go version
 ### Download and build binaries
 ```
 cd $HOME
-curl -s https://raw.githubusercontent.com/soar-robotics/testnet-binaries/main/v0.2.9/ubuntu22.04/soarchaind > soarchaind
+curl -s https://raw.githubusercontent.com/soar-robotics/testnet-binaries/main/v0.2.10/ubuntu22.04/soarchaind > soarchaind
 chmod +x soarchaind
 mkdir -p $HOME/go/bin/
 mv soarchaind $HOME/go/bin/
-curl -L https://snapshots-testnet.nodejumper.io/soarchain-testnet/libwasmvm.x86_64.so > libwasmvm.x86_64.so
-sudo mv libwasmvm.x86_64.so /var/lib/libwasmvm.x86_64.so
+sudo wget -P /usr/lib https://github.com/CosmWasm/wasmvm/releases/download/v1.3.0/libwasmvm.x86_64.so
 go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@latest
 ```
 
@@ -159,10 +158,21 @@ soarchaind tx staking create-validator \
 
 ### Update
 ```
-No update
+sudo systemctl stop soarchaind
+
+cd $HOME
+curl -s https://raw.githubusercontent.com/soar-robotics/testnet-binaries/main/v0.2.10/ubuntu22.04/soarchaind > soarchaind
+chmod +x soarchaind
+mkdir -p $HOME/go/bin/
+mv soarchaind $HOME/go/bin/
+
+curl "https://snapshots-testnet.nodejumper.io/soarchain-testnet/soarchain-testnet_latest.tar.lz4" | lz4 -dc - | tar -xf - -C "$HOME/.soarchaind"
+
+sudo systemctl start soarchaind
+sudo journalctl -u soarchaind -f --no-hostname -o cat
 
 Current network:soarchaintestnet
-Current version:v0.2.9
+Current version:v0.2.10
 ```
 
 ### Useful commands
